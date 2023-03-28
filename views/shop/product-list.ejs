@@ -28,9 +28,8 @@
                                 </div>
                                 <div class="card__actions">
                                     <a href="/products/<%= product.id %>" class="btn">Details</a>
-                                    <form action="/add-to-cart" method="POST">
-                                        <button class="btn">Add to Cart</button>
-                                    </form>
+                                    <!-- we are passing data to the form because product is a local variable inside the for loop and include doesn't get that variable by default -->
+                                    <%- include('../includes/add-to-cart.ejs',{product: product}) %>
                                 </div>
                             </article>
                             <% } %>
