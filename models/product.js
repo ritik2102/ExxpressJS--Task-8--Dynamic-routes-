@@ -18,7 +18,8 @@ const getProductsFromFile = cb => {
 };
 
 module.exports = class Product {
-  constructor(title, imageUrl, description, price) {
+  constructor(id,title, imageUrl, description, price) {
+    this.id=id;
     this.title = title;
     this.imageUrl = imageUrl;
     this.description = description;
@@ -26,13 +27,34 @@ module.exports = class Product {
   }
 
   save() {
-    this.id=Math.random().toString();
     getProductsFromFile(products => {
-      products.push(this);
-      fs.writeFile(p, JSON.stringify(products), err => {
-        console.log(err);
-      });
+      if(this.id){
+        const existingProductIndex=products.findIndex(prod=>prod.id === this.id);
+        const updatedProducts=[...products];
+        updatedProducts[existingProductIndex]=this;
+        fs.writeFile(p, JSON.stringify(updatedProducts), err => {
+          console.log(err);
+        });
+      } else{
+        this.id=Math.random().toString();
+        products.push(this);
+        fs.writeFile(p, JSON.stringify(products), err => {
+          console.log(err);
+        });
+      }
+      
     });
+  }
+// extracting the index of product we want to delete and then removing it using splice
+  static deleteProductById(id){
+    getProductsFromFile(products=>{
+      // extracting the index of the object we want to delete
+      const productIndex=products.findIndex(prod=>prod.id===id);
+      products.splice(productIndex,1);
+      fs.writeFile(p,JSON.stringify(products),err=>{
+        console.log(err); 
+      });
+    })
   }
 
   static fetchAll(cb) {
@@ -41,7 +63,7 @@ module.exports = class Product {
 
   static findById(id,cb){
     getProductsFromFile(products=>{
-      const product=products.find(p=> p.id=== id)
+      const product=products.find(p=> p.id === id)
       cb(product);
     });
   }
