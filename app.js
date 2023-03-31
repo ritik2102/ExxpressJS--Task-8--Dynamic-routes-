@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const errorController = require('./controllers/error');
+// const db=require('./util/database');
 
 const app = express();
 
@@ -12,6 +13,10 @@ app.set('views', 'views');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+
+// Since we are recieving a promise, we will go for then and catch
+// db.end() is used when we want to shut off our application
+// db.end();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
