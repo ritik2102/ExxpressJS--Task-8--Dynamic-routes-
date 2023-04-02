@@ -1,31 +1,31 @@
-const db=require('../util/database');
+// importing sequelize
+const Sequelize=require('sequelize');
 
-const cart=require('./cart');
+// importing the database connection managed by sequelize
+const sequelize=require('../util/database');
 
-module.exports = class Product {
-  constructor(id,title, imageUrl, description, price) {
-    this.id=id;
-    this.title = title;
-    this.imageUrl = imageUrl;
-    this.description = description;
-    this.price = price;
+// defining a new model
+// we define the fields that our model should have
+const Product=sequelize.define('product',{
+  id:{
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    allowNull: false,
+    primaryKey: true
+  },
+  title: Sequelize.STRING,
+  price:{
+    type:Sequelize.DOUBLE,
+    allowNull:false
+  },
+  imageUrl:{
+    type:Sequelize.STRING,
+    allowNull:false
+  },
+  description:{
+    type:Sequelize.STRING,
+    allowNull:false
   }
+});
 
-  save() {
-    return db.execute('INSERT INTO products (title,price,imageUrl,description) VALUES (?,?,?,?)',
-    [this.title,this.price,this.imageUrl,this.description]
-    );
-  }
-// extracting the index of product we want to delete and then removing it using splice
-  static deleteProductById(id){
-    return db.execute('DELETE FROM products WHERE products.id =?',[id]);
-  }
-
-  static fetchAll() {
-    return db.execute('SELECT * FROM products');
-  }
-
-  static findById(id){
-    return db.execute('SELECT * FROM products WHERE products.id =?',[id]);
-  }
-};
+module.exports= Product;

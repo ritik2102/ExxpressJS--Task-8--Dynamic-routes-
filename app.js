@@ -4,7 +4,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const errorController = require('./controllers/error');
-// const db=require('./util/database');
+// importing sequelize
+const sequelize=require('./util/database');
 
 const app = express();
 
@@ -26,4 +27,16 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-app.listen(3000);
+// it syncs the models to the database by creating the tables
+sequelize
+    .sync()
+    .then(result=>{
+        // console.log(result);
+        // We only start the server if we somehow made it upto here
+        app.listen(3000);
+    })
+    .catch(err=>{
+        console.log(err);
+    });
+
+
